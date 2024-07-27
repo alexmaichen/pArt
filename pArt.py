@@ -18,12 +18,6 @@ def shuffle(string: str) -> str:
 
 #remove all instances of a given char from a given string
 def charRemove(string: str, charToRemove: str) -> str:
-    
-    if type(string) != str or type(charToRemove) != str:
-        raise TypeError
-    if len(charToRemove) != 1:
-        raise ValueError("Invalid length for char input.")
-    
     w = ""
     for c in string:
         if c != charToRemove:
@@ -38,10 +32,10 @@ wordListFileName = "pa_words.txt"
 CONJ      = []
 
 NULL      = 0
-INFINITIV = WH = 1
-PRESENT   = BL = 2
-PRETERIT  = BR = 3
-PERFECT   = OR = 4
+INFINITIV = 1
+PRESENT   = 2
+PRETERIT  = 3
+PERFECT   = 4
 
 infi = []
 pres = []
@@ -85,28 +79,22 @@ root = Tk()
 frm = ttk.Frame(root)
 frm.grid()
 
-#
+# populate grid with values and display everything
 for x in range(len(drawing)):
     for y in range(len(drawing[x])):
         wordT = int(drawing[x][y])
         word = ""
         if pres and pret and infi and perf:
+
             if wordT == PRESENT:
                 word = pres.pop()
-                word = str(y)+str(x) + " = " + word
-
             if wordT == PRETERIT:
                 word = pret.pop()
-                word = str(y)+str(x) + " = " + word
-
             if wordT == INFINITIV:
                 word = infi.pop()
-                word = str(y)+str(x) + " = " + word
-
             if wordT == PERFECT:
                 word = perf.pop()
-                word = str(y)+str(x) + " = " + word
-
+                
             ttk.Button(frm, text = word).grid(column = y, row = x)
         else:
             raise ValueError("Did not supply enough values to populate grid.")
