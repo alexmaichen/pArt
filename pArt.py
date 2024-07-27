@@ -2,7 +2,8 @@
 from tkinter import *
 from tkinter import ttk
 
-def shuffle(string: str) -> str: # shuffle the elements of a python3 list randomly
+#shuffle a list or string
+def shuffle(string: str) -> str:
     from random import randint
     s = []
     d = []
@@ -14,6 +15,20 @@ def shuffle(string: str) -> str: # shuffle the elements of a python3 list random
         d.append(r)
         s.append(string[r])
     return s
+
+#remove all instances of a given char from a given string
+def charRemove(string: str, charToRemove: str) -> str:
+    
+    if type(string) != str or type(charToRemove) != str:
+        raise TypeError
+    if len(charToRemove) != 1:
+        raise ValueError("Invalid length for char input.")
+    
+    w = ""
+    for c in string:
+        if c != charToRemove:
+            w += c
+    return w
 
 pixelArtFileName = "pa_pixels.txt"
 wordListFileName = "pa_words.txt"
@@ -39,6 +54,15 @@ with open(wordListFileName) as wordLptr:
     pret = wordLptr.readline().split(" ")
     perf = wordLptr.readline().split(" ")
 
+for i in range(len(infi)):
+    infi[i] = infi[i].rstrip()
+for i in range(len(pres)):
+    pres[i] = pres[i].rstrip()
+for i in range(len(pret)):
+    pret[i] = pret[i].rstrip()
+for i in range(len(perf)):
+    perf[i] = perf[i].rstrip()
+
 # thought randomizing might be nice so as to have some variance in what words appear (and where they appear) from one time to the next
 infi = shuffle(infi)
 pres = shuffle(pres)
@@ -49,31 +73,41 @@ perf = shuffle(perf)
 drawing = []
 
 with open(pixelArtFileName) as pixelAptr:
+    i = 0
     for line in pixelAptr:
-        drawing.append(line)
+        line = charRemove(line, " ")
+        drawing.append(line.rstrip())
+        i += 1
 
 """generate grid"""
 # init window
 root = Tk()
-frm = ttk.Frame(root, padding=10)
+frm = ttk.Frame(root)
 frm.grid()
 
 #
 for x in range(len(drawing)):
     for y in range(len(drawing[x])):
-        wordT = drawing[x][y]
+        wordT = int(drawing[x][y])
         word = ""
         if pres and pret and infi and perf:
             if wordT == PRESENT:
-                word = str(y)+str(x) + " = " + pres.pop()
+                word = pres.pop()
+                word = str(y)+str(x) + " = " + word
+
             if wordT == PRETERIT:
-                word = str(y)+str(x) + " = " + pret.pop()
+                word = pret.pop()
+                word = str(y)+str(x) + " = " + word
+
             if wordT == INFINITIV:
-                word = str(y)+str(x) + " = " + infi.pop()
+                word = infi.pop()
+                word = str(y)+str(x) + " = " + word
+
             if wordT == PERFECT:
-                word = str(y)+str(x) + " = " + perf.pop()
-            ttk.Button(frm, text=word).grid(column=1+y, row=0+x)
+                word = perf.pop()
+                word = str(y)+str(x) + " = " + word
+
+            ttk.Button(frm, text = word).grid(column = y, row = x)
         else:
-            root.destroy()
             raise ValueError("Did not supply enough values to populate grid.")
 root.mainloop()
