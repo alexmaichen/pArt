@@ -28,52 +28,23 @@ pixelArtFileName = "pa_pixels.txt"
 wordListFileName = "pa_words.txt"
 
 # colorcoded constants to fill pixel art with
-# TODO make this fully modifiable by the user using the currently unused CONJ list, which would be filled with the types the user wants to declare, at will
-CONJ      = []
-
-NULL      = 0
-INFINITIV = 1
-PRESENT   = 2
-PRETERIT  = 3
-PERFECT   = 4
-
-infi = []
-pres = []
-pret = []
-pref = []
-
+conj = []
 with open(wordListFileName) as wordLptr:
-    infi = wordLptr.readline().split(" ")
-    pres = wordLptr.readline().split(" ")
-    pret = wordLptr.readline().split(" ")
-    perf = wordLptr.readline().split(" ")
-
-for i in range(len(infi)):
-    infi[i] = infi[i].rstrip()
-for i in range(len(pres)):
-    pres[i] = pres[i].rstrip()
-for i in range(len(pret)):
-    pret[i] = pret[i].rstrip()
-for i in range(len(perf)):
-    perf[i] = perf[i].rstrip()
-
-# thought randomizing might be nice so as to have some variance in what words appear (and where they appear) from one time to the next
-infi = shuffle(infi)
-pres = shuffle(pres)
-pret = shuffle(pret)
-perf = shuffle(perf)
+    nLines = 0
+    for line in wordLptr:
+        nLines += 1
+        line = line.rstrip().split(" ")
+        conj.append(line)
+        print(line)
 
 # pixel art 2dlist
 drawing = []
 
 with open(pixelArtFileName) as pixelAptr:
-    i = 0
     for line in pixelAptr:
         line = charRemove(line, " ")
         drawing.append(line.rstrip())
-        i += 1
 
-"""generate grid"""
 # init window
 root = Tk()
 frm = ttk.Frame(root)
@@ -84,18 +55,11 @@ for x in range(len(drawing)):
     for y in range(len(drawing[x])):
         wordT = int(drawing[x][y])
         word = ""
-        if pres and pret and infi and perf:
-
-            if wordT == PRESENT:
-                word = pres.pop()
-            if wordT == PRETERIT:
-                word = pret.pop()
-            if wordT == INFINITIV:
-                word = infi.pop()
-            if wordT == PERFECT:
-                word = perf.pop()
-                
-            ttk.Button(frm, text = word).grid(column = y, row = x)
+        if wordT > nLines:
+            raise ValueError("A pixel in " + pixelArtFileName + " does not have any associated words in " + wordListFileName)
+        if conj[wordT - 1]:
+            word = conj[wordT - 1].pop()
         else:
-            raise ValueError("Did not supply enough values to populate grid.")
+            raise ValueError("Did not sufficiently populate line " + str(wordT) + " in " + wordListFileName)
+        ttk.Button(frm, text = word).grid(column = y, row = x)
 root.mainloop()
