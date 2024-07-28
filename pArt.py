@@ -54,10 +54,11 @@ frm.grid()
 for x in range(len(drawing)):
     for y in range(len(drawing[x])):
         wordT = int(drawing[x][y])
-        word = ""
         if wordT > nLines:
             raise ValueError("A pixel in " + pixelArtFileName + " does not have any associated words in " + wordListFileName)
-        if conj[wordT - 1]:
+        if wordT == 0:
+            word = ""
+        elif conj[wordT - 1]:
             word = conj[wordT - 1].pop()
         else:
             raise ValueError("Did not sufficiently populate line " + str(wordT) + " in " + wordListFileName)
