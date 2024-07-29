@@ -1,3 +1,7 @@
+"""feel free to edit the input file names to suit your needs"""
+PIXELARTFILENAME = "pa_pixels.txt"
+WORDLISTFILENAME = "pa_words.txt"
+
 """init"""
 from tkinter import *
 from tkinter import ttk
@@ -24,23 +28,22 @@ def charRemove(string: str, charToRemove: str) -> str:
             w += c
     return w
 
-pixelArtFileName = "pa_pixels.txt"
-wordListFileName = "pa_words.txt"
-
 # colorcoded constants to fill pixel art with
 conj = []
-with open(wordListFileName) as wordLptr:
+with open(WORDLISTFILENAME) as wordLptr:
     nLines = 0
     for line in wordLptr:
         nLines += 1
         line = line.rstrip().split(" ")
         conj.append(line)
-        print(line)
+
+if nLines > 9:
+    raise ValueError(WORDLISTFILENAME + " must not contain more than 9 lines.")
 
 # pixel art 2dlist
 drawing = []
 
-with open(pixelArtFileName) as pixelAptr:
+with open(PIXELARTFILENAME) as pixelAptr:
     for line in pixelAptr:
         line = charRemove(line, " ")
         drawing.append(line.rstrip())
@@ -50,17 +53,18 @@ root = Tk()
 frm = ttk.Frame(root)
 frm.grid()
 
+"""populate grid"""
 # populate grid with values and display everything
 for x in range(len(drawing)):
     for y in range(len(drawing[x])):
         wordT = int(drawing[x][y])
         if wordT > nLines:
-            raise ValueError("A pixel in " + pixelArtFileName + " does not have any associated words in " + wordListFileName)
+            raise ValueError("A pixel in " + PIXELARTFILENAME + " does not have any associated words in " + WORDLISTFILENAME)
         if wordT == 0:
             word = ""
         elif conj[wordT - 1]:
             word = conj[wordT - 1].pop()
-        else:
-            raise ValueError("Did not sufficiently populate line " + str(wordT) + " in " + wordListFileName)
+        else: # no word can be found in one of the lines
+            raise ValueError("Did not sufficiently populate line " + str(wordT) + " in " + WORDLISTFILENAME)
         ttk.Button(frm, text = word).grid(column = y, row = x)
 root.mainloop()
