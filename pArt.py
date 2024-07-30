@@ -5,19 +5,20 @@ WORDLISTFILENAME = "pa_words.txt"
 """init"""
 from tkinter import *
 from tkinter import ttk
+from random import randint
+import os.path
 
 #shuffle a list or string
-def shuffle(string: str) -> str:
-    from random import randint
+def shuffle(thingToShuffle: str | list) -> str | list:
     s = []
     d = []
-    while len(s) != len(string): # make sure it has copied every entry
-        r = randint(0, len(string) - 1)
+    while len(s) != len(thingToShuffle): # make sure it has copied every entry
+        r = randint(0, len(thingToShuffle) - 1)
         while r in d:
-            r = (r+1)%len(string)
+            r = (r+1)%len(thingToShuffle)
         # memory which entries have been copied already
         d.append(r)
-        s.append(string[r])
+        s.append(thingToShuffle[r])
     return s
 
 #remove all instances of a given char from a given string
@@ -28,7 +29,13 @@ def charRemove(string: str, charToRemove: str) -> str:
             w += c
     return w
 
-# colorcoded constants to fill pixel art with
+# check that input-files exist
+if not os.path.exists(WORDLISTFILENAME):
+    raise FileNotFoundError(WORDLISTFILENAME + " does not exist.")
+elif not os.path.exists(PIXELARTFILENAME):
+    raise FileNotFoundError(PIXELARTFILENAME + " does not exist.")
+
+# colorcoded constants to fill grid with
 conj = []
 with open(WORDLISTFILENAME) as wordLptr:
     nLines = 0
@@ -59,7 +66,7 @@ for x in range(len(drawing)):
     for y in range(len(drawing[x])):
         wordT = int(drawing[x][y])
         if wordT > nLines:
-            raise ValueError("A pixel in " + PIXELARTFILENAME + " does not have any associated words in " + WORDLISTFILENAME)
+            raise ValueError("A digit in " + PIXELARTFILENAME + " does not have an associated line in " + WORDLISTFILENAME)
         if wordT == 0:
             word = ""
         elif conj[wordT - 1]:
