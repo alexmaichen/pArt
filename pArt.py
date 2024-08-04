@@ -24,7 +24,7 @@ def shuffle(thingToShuffle: list) -> list:
 
 #remove all instances of a given char from a given string
 def charRemove(string: str, charToRemove: str) -> str:
-    w = ""
+    w = ''
     for c in string:
         if c != charToRemove:
             w += c
@@ -43,7 +43,7 @@ if WORDLISTFILENAME[-4:] == ".txt":
         nLines = 0
         for line in wordLptr:
             nLines += 1
-            line = line.rstrip().split(" ")
+            line = line.rstrip().split(' ')
             conj.append(line)
 
 elif WORDLISTFILENAME[-4:] == ".csv":
@@ -65,7 +65,7 @@ drawing = []
 if PIXELARTFILENAME[-4:] == ".txt":
     with open(PIXELARTFILENAME) as pixelAptr:
         for line in pixelAptr:
-            line = charRemove(line, " ")
+            line = charRemove(line, ' ')
             drawing.append(line.rstrip())
 
 elif PIXELARTFILENAME[-4:] == ".csv":
@@ -74,7 +74,7 @@ elif PIXELARTFILENAME[-4:] == ".csv":
         i = 0
         for row in spamreader:
             conj.append([])
-            for elem in row.split(","):
+            for elem in row.split(' '):
                 conj[i].append(elem)
             i += 1
 
@@ -91,7 +91,7 @@ for x in range(len(drawing)):
         if wordT > nLines:
             raise ValueError("A digit in " + PIXELARTFILENAME + " does not have an associated line in " + WORDLISTFILENAME)
         if wordT == 0:
-            word = ""
+            word = ''
         elif conj[wordT - 1]:
             word = conj[wordT - 1].pop()
         else: # no word can be found in one of the lines
