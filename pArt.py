@@ -7,9 +7,10 @@ from tkinter import *
 from tkinter import ttk
 from random import randint
 import os.path
+import csv
 
 #shuffle a list or string
-def shuffle(thingToShuffle: str | list) -> str | list:
+def shuffle(thingToShuffle: list) -> list:
     s = []
     d = []
     while len(s) != len(thingToShuffle): # make sure it has copied every entry
@@ -37,12 +38,23 @@ elif not os.path.exists(PIXELARTFILENAME):
 
 # colorcoded constants to fill grid with
 conj = []
-with open(WORDLISTFILENAME) as wordLptr:
-    nLines = 0
-    for line in wordLptr:
-        nLines += 1
-        line = line.rstrip().split(" ")
-        conj.append(line)
+if WORDLISTFILENAME[-4:] == ".txt":
+    with open(WORDLISTFILENAME) as wordLptr:
+        nLines = 0
+        for line in wordLptr:
+            nLines += 1
+            line = line.rstrip().split(" ")
+            conj.append(line)
+
+elif WORDLISTFILENAME[-4:] == ".csv":
+    with open(WORDLISTFILENAME, newline='') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+        i = 0
+        for row in spamreader:
+            conj.append([])
+            for elem in row:
+                conj[i].append(elem)
+            i += 1
 
 if nLines > 9:
     raise ValueError(WORDLISTFILENAME + " must not contain more than 9 lines.")
@@ -50,10 +62,21 @@ if nLines > 9:
 # pixel art 2dlist
 drawing = []
 
-with open(PIXELARTFILENAME) as pixelAptr:
-    for line in pixelAptr:
-        line = charRemove(line, " ")
-        drawing.append(line.rstrip())
+if PIXELARTFILENAME[-4:] == ".txt":
+    with open(PIXELARTFILENAME) as pixelAptr:
+        for line in pixelAptr:
+            line = charRemove(line, " ")
+            drawing.append(line.rstrip())
+
+elif PIXELARTFILENAME[-4:] == ".csv":
+    with open(PIXELARTFILENAME, newline='') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+        i = 0
+        for row in spamreader:
+            conj.append([])
+            for elem in row.split(","):
+                conj[i].append(elem)
+            i += 1
 
 # init window
 root = Tk()
