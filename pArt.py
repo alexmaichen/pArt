@@ -9,6 +9,12 @@ from random import randint
 import os.path
 import csv
 
+# init window
+root = Tk()
+root.title('Make your own word grid')
+frm = ttk.Frame(root)
+frm.grid()
+
 #shuffle a list or string
 def shuffle(thingToShuffle: list) -> list:
     s = []
@@ -16,7 +22,7 @@ def shuffle(thingToShuffle: list) -> list:
     while len(s) != len(thingToShuffle): # make sure it has copied every entry
         r = randint(0, len(thingToShuffle) - 1)
         while r in d:
-            r = (r+1)%len(thingToShuffle)
+            r = randint(0, len(thingToShuffle) - 1)
         # memory which entries have been copied already
         d.append(r)
         s.append(thingToShuffle[r])
@@ -31,10 +37,15 @@ def charRemove(string: str, charToRemove: str) -> str:
     return w
 
 # check that input-files exist
-if not os.path.exists(WORDLISTFILENAME):
-    raise FileNotFoundError(WORDLISTFILENAME + " does not exist.")
-elif not os.path.exists(PIXELARTFILENAME):
-    raise FileNotFoundError(PIXELARTFILENAME + " does not exist.")
+def doFilesExist(paths: list):
+    for path in paths:
+        if not os.path.exists(path):
+            raise FileNotFoundError(path + " does not exist.")
+
+doFilesExist([
+    PIXELARTFILENAME,
+    WORDLISTFILENAME
+    ])
 
 # colorcoded constants to fill grid with
 conj = []
@@ -52,7 +63,7 @@ elif WORDLISTFILENAME[-4:] == ".csv":
         i = 0
         for row in spamreader:
             conj.append([])
-            for elem in row:
+            for elem in row.split(' '):
                 conj[i].append(elem)
             i += 1
 
@@ -78,13 +89,9 @@ elif PIXELARTFILENAME[-4:] == ".csv":
                 conj[i].append(elem)
             i += 1
 
-# init window
-root = Tk()
-frm = ttk.Frame(root)
-frm.grid()
-
 """populate grid"""
 # populate grid with values and display everything
+buttons = []
 for x in range(len(drawing)):
     for y in range(len(drawing[x])):
         wordT = int(drawing[x][y])
@@ -96,5 +103,6 @@ for x in range(len(drawing)):
             word = conj[wordT - 1].pop()
         else: # no word can be found in one of the lines
             raise ValueError("Did not sufficiently populate line " + str(wordT) + " in " + WORDLISTFILENAME)
-        ttk.Button(frm, text = word).grid(column = y, row = x)
+        buttons.append(ttk.Button(frm, text = "\n" + word + "\n").grid(column = y, row = x))
 root.mainloop()
+
