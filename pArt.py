@@ -54,16 +54,16 @@ if WORDLISTFILENAME[-4:] == ".txt":
         nLines = 0
         for line in wordLptr:
             nLines += 1
-            line = line.rstrip().split(' ')
+            line = line.rstrip().split(',')
             conj.append(line)
 
 elif WORDLISTFILENAME[-4:] == ".csv":
     with open(WORDLISTFILENAME, newline='') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         i = 0
         for row in spamreader:
             conj.append([])
-            for elem in row.split(' '):
+            for elem in row.split(','):
                 conj[i].append(elem)
             i += 1
 
@@ -76,16 +76,16 @@ drawing = []
 if PIXELARTFILENAME[-4:] == ".txt":
     with open(PIXELARTFILENAME) as pixelAptr:
         for line in pixelAptr:
-            line = charRemove(line, ' ')
+            line = charRemove(line, ',')
             drawing.append(line.rstrip())
 
 elif PIXELARTFILENAME[-4:] == ".csv":
     with open(PIXELARTFILENAME, newline='') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         i = 0
         for row in spamreader:
             conj.append([])
-            for elem in row.split(' '):
+            for elem in row.split(','):
                 conj[i].append(elem)
             i += 1
 
